@@ -1,6 +1,6 @@
 {
   "name": "ast-transfer",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "A general approach to process AST bottom-up.",
   "main": "index.js",
   "scripts": {
@@ -26,11 +26,11 @@
   "dependencies": {
     "bnfer": "0.0.6",
     "pfc-compiler": "^0.1.9",
-    "stream-token-parser": "0.0.4",
+    "stream-token-parser": "0.0.5",
     "syntaxer": "0.0.14"
   },
   "devDependencies": {
-    "cl-fsm": "0.0.2",
+    "cl-fsm": "0.0.3",
     "istanbul": "^0.4.5",
     "mocha": "^4.0.0"
   }

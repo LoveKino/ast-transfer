@@ -1,9 +1,8 @@
 'use strict';
 
 let {
-    stringGraph,
-    numberGraph
-} = require('cl-fsm/apply/json');
+    jsonNumberExpStr,
+} = require('cl-fsm/lib/commonTokenReg');
 let {
     buildFSM
 } = require('stream-token-parser');
@@ -46,7 +45,7 @@ describe('index', () => {
             },
             tokenTypes: [{
                 name: 'num',
-                match: buildFSM(numberGraph),
+                match: buildFSM(jsonNumberExpStr),
                 priority: 1
             }]
         }, [
@@ -65,7 +64,7 @@ describe('index', () => {
             },
             tokenTypes: [{
                 name: 'num',
-                match: buildFSM(numberGraph),
+                match: buildFSM(jsonNumberExpStr),
                 priority: 1
             }, {
                 name: '+',
@@ -92,7 +91,7 @@ describe('index', () => {
             },
             tokenTypes: [{
                 name: 'num',
-                match: buildFSM(numberGraph),
+                match: buildFSM(jsonNumberExpStr),
                 priority: 1
             }, {
                 name: '+',
