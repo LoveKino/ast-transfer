@@ -27,7 +27,7 @@
     "bnfer": "0.0.6",
     "pfc-compiler": "^0.1.9",
     "stream-token-parser": "0.0.5",
-    "syntaxer": "0.0.14"
+    "syntaxer": "0.0.15"
   },
   "devDependencies": {
     "cl-fsm": "0.0.3",

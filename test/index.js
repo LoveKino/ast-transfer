@@ -7,104 +7,85 @@ let {
     buildFSM
 } = require('stream-token-parser');
 let {
-    buildGrammer,
-    compile
-} = require('..');
-let assert = require('assert');
-
-let quickTest = (bnfText, {
-    annotationContext,
-    tokenTypes
-}, tests) => {
-    let {
-        grammer,
-        lr1table,
-        annotations
-    } = buildGrammer(bnfText);
-
-    for (let i = 0; i < tests.length; i++) {
-        let [text, expected] = tests[i];
-        let real = compile(text, {
-            grammer,
-            lr1table,
-            annotations,
-            annotationContext,
-            tokenTypes
-        });
-        assert.deepEqual(real, expected);
-    }
-};
+    quickTest
+} = require('./util');
 
 describe('index', () => {
     it('base', () => {
         quickTest(`
         E := num @ exp($1)
-        `, {
-            annotationContext: {
-                exp: v => Number(v)
-            },
-            tokenTypes: [{
-                name: 'num',
-                match: buildFSM(jsonNumberExpStr),
-                priority: 1
-            }]
-        }, [
-            ['123', 123],
-            ['876', 876]
-        ]);
+        `,
+
+            {
+                annotationContext: {
+                    exp: v => Number(v)
+                },
+                tokenTypes: [{
+                    name: 'num',
+                    match: buildFSM(jsonNumberExpStr),
+                    priority: 1
+                }]
+            }, [
+                ['123', 123],
+                ['876', 876]
+            ]);
     });
 
     it('add', () => {
         quickTest(`E := num + num @add($1, $3)
-        `, {
-            annotationContext: {
-                add: (v1, v2) => {
-                    return Number(v1) + Number(v2);
-                }
-            },
-            tokenTypes: [{
-                name: 'num',
-                match: buildFSM(jsonNumberExpStr),
-                priority: 1
-            }, {
-                name: '+',
-                match: '+',
-                priority: 1
-            }]
-        }, [
-            ['5+6', 11],
-            ['8+9', 17]
-        ]);
+        `,
+
+            {
+                annotationContext: {
+                    add: (v1, v2) => {
+                        return Number(v1) + Number(v2);
+                    }
+                },
+                tokenTypes: [{
+                    name: 'num',
+                    match: buildFSM(jsonNumberExpStr),
+                    priority: 1
+                }, {
+                    name: '+',
+                    match: '+',
+                    priority: 1
+                }]
+            }, [
+                ['5+6', 11],
+                ['8+9', 17]
+            ]);
     });
 
     it('math', () => {
         quickTest(`E := E + num @add($1, number($3))
                     |   E - num @subtraction($1, number($3))
                     |   num @number($1)
-        `, {
-            annotationContext: {
-                add: (v1, v2) => v1 + v2,
-                subtraction: (v1, v2) => {
-                    return v1 - v2;
+        `,
+
+            {
+                annotationContext: {
+                    add: (v1, v2) => v1 + v2,
+                    subtraction: (v1, v2) => {
+                        return v1 - v2;
+                    },
+                    number: (v) => Number(v)
                 },
-                number: (v) => Number(v)
-            },
-            tokenTypes: [{
-                name: 'num',
-                match: buildFSM(jsonNumberExpStr),
-                priority: 1
-            }, {
-                name: '+',
-                match: '+',
-                priority: 2
-            }, {
-                name: '-',
-                match: '-',
-                priority: 2
-            }]
-        }, [
-            ['5+6-2', 9],
-            ['8-1-1+9', 15]
-        ]);
+                tokenTypes: [{
+                    name: 'num',
+                    match: buildFSM(jsonNumberExpStr),
+                    priority: 1
+                }, {
+                    name: '+',
+                    match: '+',
+                    priority: 2
+                }, {
+                    name: '-',
+                    match: '-',
+                    priority: 2
+                }]
+            }, [
+                ['5+6-2', 9],
+                ['8-1-1+9', 15]
+            ]);
     });
 });
